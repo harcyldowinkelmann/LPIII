@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import Usuário from "./usuário";
-import Avaliação from "./avaliação";
+import Audição from "./audição";
 
 export enum EstiloRegência { 
     CLASSICO = "clássico", 
@@ -20,8 +20,8 @@ export default class Maestro extends BaseEntity {
     @Column({ type: "enum", enum: EstiloRegência })
     estiloRegência: EstiloRegência;
 
-    @OneToMany(() => Avaliação, (avaliação) => avaliação.maestro)
-    avaliações: Avaliação[];
+    @OneToMany(() => Audição, (audição) => audição.maestro)
+    audições: Audição[];
 
     @OneToOne(() => Usuário, (usuário) => usuário.maestro, { onDelete: "CASCADE" })
     @JoinColumn()

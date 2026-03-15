@@ -1,5 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import Maestro from "./maestro";
+import Músico from "./músico";
 import Audição from "./audição";
 
 @Entity()
@@ -19,6 +19,6 @@ export default class Avaliação extends BaseEntity {
     @ManyToOne(() => Audição, (audição) => audição.avaliações, { onDelete: "CASCADE" })
     audição: Audição;
 
-    @ManyToOne(() => Maestro, (maestro) => maestro.avaliações, { onDelete: "CASCADE" })
-    maestro: Maestro;
+    @ManyToOne(() => Músico, (músico) => músico.avaliações, { onDelete: "CASCADE" })
+    músico: Músico;
 }
