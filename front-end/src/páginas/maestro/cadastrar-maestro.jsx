@@ -4,31 +4,31 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
 import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { Toast } from "primereact/toast";
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import { serviçoCadastrarMusico, serviçoBuscarMusico } from "../../serviços/serviços-músico";
+import { serviçoCadastrarMaestro, serviçoBuscarMaestro } from "../../serviços/serviços-maestro";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { MostrarMensagemErro, checarListaVazia, validarCamposObrigatórios } from "../../utilitários/validações";
-import { estilizarBotão, estilizarBotãoRetornar, estilizarCard, estilizarDivCampo, estilizarDivider, estilizarDropdown, estilizarFlex, estilizarInlineFlex, estilizarInputText, estilizarLabel } from "../../utilitários/estilos";
+import { estilizarBotão, estilizarBotãoRetornar, estilizarCard, estilizarDivCampo, estilizarDivider, estilizarDropdown, estilizarFlex, estilizarInlineFlex, estilizarInputNumber, estilizarLabel } from "../../utilitários/estilos";
 
-export default function CadastrarMusico() {
+export default function CadastrarMaestro() {
     const referênciaToast = useRef(null);
     const { usuárioLogado, setUsuárioLogado } = useContext(ContextoUsuário);
-    const [dados, setDados] = useState({ instrumentoPrincipal: "", nívelExperiência: "" });
+    const [dados, setDados] = useState({ estiloRegência: "", anosExperiência: "" });
     const [erros, setErros] = useState({});
     const [cpfExistente, setCpfExistente] = useState(false);
     const navegar = useNavigate();
 
-    const opçõesNivelExperiencia = [
-        { label: "Iniciante", value: "iniciante" },
-        { label: "Intermediário", value: "intermediário" },
-        { label: "Avançado", value: "avançado" },
-        { label: "Profissional", value: "profissional" }
+    const opçõesEstiloRegencia = [
+        { label: "Clássico", value: "clássico" },
+        { label: "Sinfônico", value: "sinfônico" },
+        { label: "Popular", value: "popular" },
+        { label: "Contemporâneo", value: "contemporâneo" }
     ];
 
     function alterarEstado(event) {
-        const chave = event.target.name || event.target.id;
+        const chave = event.target.name || event.value;
         const valor = event.target.value;
         setDados({ ...dados, [chave]: valor });
     }
@@ -40,26 +40,26 @@ export default function CadastrarMusico() {
     }
 
     function tituloFormulário() {
-        if (usuárioLogado?.cadastrado) return "Consultar Músico";
-        else return "Cadastrar Músico";
+        if (usuárioLogado?.cadastrado) return "Consultar Maestro";
+        else return "Cadastrar Maestro";
     }
 
-    async function cadastrarMusico() {
+    async function cadastrarMaestro() {
         if (validarCampos()) {
             try {
-                const response = await serviçoCadastrarMusico({
+                const response = await serviçoCadastrarMaestro({
                     ...dados,
                     usuário_info: usuárioLogado,
-                    instrumentoPrincipal: dados.instrumentoPrincipal,
-                    nívelExperiência: dados.nívelExperiência
+                    estiloRegência: dados.estiloRegência,
+                    anosExperiência: dados.anosExperiência
                 });
                 if (response.data) {
                     setUsuárioLogado(usuário => ({ ...usuário, status: response.data.status, token: response.data.token }));
-                    mostrarToast(referênciaToast, "Músico cadastrado com sucesso!", "sucesso");
+                    mostrarToast(referênciaToast, "Maestro cadastrado com sucesso!", "sucesso");
                 }
             } catch (error) {
                 setCpfExistente(true);
-                mostrarToast(referênciaToast, error.response?.data?.erro || "Erro ao cadastrar", "erro");
+                mostrarToast(referênciaToast, error.response.data.erro, "erro");
             }
         }
     }
@@ -70,7 +70,7 @@ export default function CadastrarMusico() {
     }
 
     function açãoBotãoSalvar() {
-        if (!usuárioLogado?.cadastrado) cadastrarMusico();
+        if (!usuárioLogado?.cadastrado) cadastrarMaestro();
     }
 
     function redirecionar() {
@@ -85,22 +85,22 @@ export default function CadastrarMusico() {
 
     useEffect(() => {
         let desmontado = false;
-        async function buscarDadosMusico() {
+        async function buscarDadosMaestro() {
             try {
-                const response = await serviçoBuscarMusico(usuárioLogado.cpf);
+                const response = await serviçoBuscarMaestro(usuárioLogado.cpf);
                 if (!desmontado && response.data) {
                     setDados(dados => ({
                         ...dados,
-                        instrumentoPrincipal: response.data.instrumentoPrincipal,
-                        nívelExperiência: response.data.nívelExperiência
+                        estiloRegência: response.data.estiloRegência,
+                        anosExperiência: response.data.anosExperiência
                     }));
                 }
             } catch (error) {
-                const erro = error.response?.data?.erro;
+                const erro = error.response.data.erro;
                 if (erro) mostrarToast(referênciaToast, erro, "erro");
             }
         }
-        if (usuárioLogado?.cadastrado) buscarDadosMusico();
+        if (usuárioLogado?.cadastrado) buscarDadosMaestro();
         return () => { desmontado = true; };
     }, [usuárioLogado?.cadastrado, usuárioLogado.cpf]);
 
@@ -109,14 +109,14 @@ export default function CadastrarMusico() {
             <Toast ref={referênciaToast} onHide={redirecionar} position="bottom-center" />
             <Card title={tituloFormulário()} className={estilizarCard(usuárioLogado.cor_tema)}>
                 <div className={estilizarDivCampo()}>
-                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Instrumento Principal*:</label>
-                    <InputText name="instrumentoPrincipal" value={dados.instrumentoPrincipal} onChange={alterarEstado} className={estilizarInputText(erros.instrumentoPrincipal, 400, usuárioLogado.cor_tema)} />
-                    <MostrarMensagemErro mensagem={erros.instrumentoPrincipal} />
+                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Estilo de Regência*:</label>
+                    <Dropdown name="estiloRegência" className={estilizarDropdown(erros.estiloRegência, usuárioLogado.cor_tema)} value={dados.estiloRegência} options={opçõesEstiloRegencia} onChange={alterarEstado} placeholder="-- Selecione --" />
+                    <MostrarMensagemErro mensagem={erros.estiloRegência} />
                 </div>
                 <div className={estilizarDivCampo()}>
-                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Nível de Experiência*:</label>
-                    <Dropdown name="nívelExperiência" className={estilizarDropdown(erros.nívelExperiência, usuárioLogado.cor_tema)} value={dados.nívelExperiência} options={opçõesNivelExperiencia} onChange={alterarEstado} placeholder="-- Selecione --" />
-                    <MostrarMensagemErro mensagem={erros.nívelExperiência} />
+                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Anos de Experiência*:</label>
+                    <InputNumber name="anosExperiência" size={5} value={dados.anosExperiência} onValueChange={alterarEstado} mode="decimal" inputClassName={estilizarInputNumber(erros.anosExperiência, usuárioLogado.cor_tema)} />
+                    <MostrarMensagemErro mensagem={erros.anosExperiência} />
                 </div>
                 <Divider className={estilizarDivider(dados.cor_tema)} />
                 <div className={estilizarInlineFlex()}>

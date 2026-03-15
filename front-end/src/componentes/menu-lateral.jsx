@@ -14,16 +14,16 @@ export default function MenuLateral({ children }) {
     const tamanhoDesktop = windowWidth > 991;
     const navegar = useNavigate();
 
-    const opçõesMusico = [
+    const opçõesMaestro = [
         { label: "Página Inicial", command: () => navegar("/pagina-inicial") },
         { label: "Menu", items: [
             { label: "Cadastrar Usuário", command: () => navegar("/atualizar-usuario"), disabled: usuárioLogado.status !== "ativo" },
-            { label: "Cadastrar Músico", command: () => navegar("/cadastrar-musico") },
+            { label: "Cadastrar Maestro", command: () => navegar("/cadastrar-maestro") },
             { label: "Sair do Sistema", command: () => sairSistema() }
         ]}
     ];
 
-    const opçõesMaestro = [];
+    const opçõesMusico = [];
 
     function sairSistema() {
         setUsuárioLogado({});

@@ -1,40 +1,53 @@
-export const checarListaVazia = (erros) => Object.keys(erros).length === 0;
+import { estilizarErro } from "./estilos";
 
-export const validarCampoEmail = (email) => {
-    let erros = {};
-    if (email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) erros.email = "Endereço de email inválido.";
-    return erros;
-};
+const ERRO_CAMPO_OBRIGATÓRIO = "Campo obrigatório não preenchido";
+const ERRO_CONFIRMAÇÃO_SENHA = "Senha não confere";
+const ERRO_FORMATO_INVÁLIDO = "Campo com formato inválido";
+const ERRO_QUESTÃO = "Resposta sem questão";
 
-export const validarCamposObrigatórios = (dados) => {
-    let erros = {};
-    Object.entries(dados).forEach(([chave, valor]) => {
-        if (!valor && valor !== false) erros[chave] = "Campo obrigatório.";
-    });
-    return erros;
-};
-
-export const validarConfirmaçãoSenha = (senha, confirmação) => {
-    let erros = {};
-    if (senha !== confirmação) erros.confirmação_senha = "As senhas não coincidem.";
-    return erros;
-};
-
-export const validarConfirmaçãoSenhaOpcional = (senha, confirmação) => {
-    let erros = {};
-    if (senha || confirmação) return validarConfirmaçãoSenha(senha, confirmação);
-    return erros;
-};
-
-export const validarRecuperaçãoAcessoOpcional = (questão, resposta) => {
-    let erros = {};
-    if ((questão && !resposta) || (!questão && resposta)) {
-        erros.questão = "Preencha a questão e a resposta.";
-        erros.resposta = "Preencha a questão e a resposta.";
+export function validarCamposObrigatórios(campos) {
+    let errosCamposObrigatórios = {};
+    for (let nomeCampo in campos) {
+        if (campos[nomeCampo] === "" || campos[nomeCampo] === null)
+            errosCamposObrigatórios[nomeCampo] = ERRO_CAMPO_OBRIGATÓRIO;
     }
-    return erros;
+    return errosCamposObrigatórios;
 };
 
-export const MostrarMensagemErro = ({ mensagem }) => (
-    mensagem ? <small className="p-error">{mensagem}</small> : <small className="p-error">&nbsp;</small>
-);
+export function validarConfirmaçãoSenha(senha, confirmação_senha) {
+    let errosConfirmaçãoSenhaOpcional = {};
+    if (senha !== confirmação_senha) {
+        errosConfirmaçãoSenhaOpcional.confirmação_senha = ERRO_CONFIRMAÇÃO_SENHA;
+    }
+    return errosConfirmaçãoSenhaOpcional;
+};
+
+export function validarConfirmaçãoSenhaOpcional(senha, confirmação_senha) {
+    let errosConfirmaçãoSenhaOpcional = {};
+    if (senha && confirmação_senha && senha !== confirmação_senha)
+        errosConfirmaçãoSenhaOpcional.confirmação_senha = ERRO_CONFIRMAÇÃO_SENHA;
+    return errosConfirmaçãoSenhaOpcional;
+};
+
+export function validarCampoEmail(email) {
+    const FORMATO_EMAIL = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    let erroEmail = {};
+    if (!email) erroEmail.email = ERRO_CAMPO_OBRIGATÓRIO;
+    else if (!FORMATO_EMAIL.test(email)) erroEmail.email = ERRO_FORMATO_INVÁLIDO;
+    return erroEmail;
+};
+
+export function validarRecuperaçãoAcessoOpcional(questão, resposta) {
+    let errosRecuperaçãoAcessoOpcional = {};
+    if (resposta && !questão) errosRecuperaçãoAcessoOpcional.questão = ERRO_QUESTÃO;
+    return errosRecuperaçãoAcessoOpcional;
+};
+
+export function checarListaVazia(listaErros) {
+    return Object.keys(listaErros).length === 0;
+};
+
+export function MostrarMensagemErro({ mensagem }) {
+    if (mensagem) return <small className={estilizarErro()}>{mensagem}</small>;
+    else return null;
+};

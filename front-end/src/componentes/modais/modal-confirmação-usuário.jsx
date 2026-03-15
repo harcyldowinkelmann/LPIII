@@ -41,10 +41,10 @@ export default function ModalConfirmaçãoUsuário() {
     }
 
     function finalizarCadastro() {
-        if (dados.perfil === "musico") {
+        if (dados.perfil === "maestro") {
             setUsuárioLogado({ ...dados, cadastrado: false });
             setMostrarModalConfirmação(false);
-            navegar("../cadastrar-musico");
+            navegar("../cadastrar-maestro");
         }
     }
 
