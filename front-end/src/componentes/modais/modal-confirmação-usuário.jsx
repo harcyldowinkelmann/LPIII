@@ -3,40 +3,45 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import ContextoUsuário from "../../contextos/contexto-usuário";
+import { serviçoAlterarUsuário, serviçoRemoverUsuário } from "../../serviços/serviços-usuário";
+import mostrarToast from "../../utilitários/mostrar-toast";
 import { estilizarBotão, estilizarBotãoRemover, estilizarDivCampo, estilizarInlineFlex, estilizarLabel, estilizarModal } from "../../utilitários/estilos";
 
 export default function ModalConfirmaçãoUsuário() {
     const referênciaToast = useRef(null);
-    const { setUsuárioLogado, confirmaçãoUsuário, setConfirmaçãoUsuário, setMostrarModalConfirmação } = useContext(ContextoUsuário);
+    const { usuárioLogado, setUsuárioLogado, confirmaçãoUsuário, setConfirmaçãoUsuário, setMostrarModalConfirmação } = useContext(ContextoUsuário);
+    const [redirecionar, setRedirecionar] = useState(false);
+    const navegar = useNavigate();
+
     const dados = { 
         cpf: confirmaçãoUsuário?.cpf, perfil: confirmaçãoUsuário?.perfil, nome: confirmaçãoUsuário?.nome, 
         senha: confirmaçãoUsuário?.senha, email: confirmaçãoUsuário?.email, questão: confirmaçãoUsuário?.questão, 
         resposta: confirmaçãoUsuário?.resposta, cor_tema: confirmaçãoUsuário?.cor_tema 
     };
-    const [redirecionar] = useState(false);
-    const navegar = useNavigate();
 
     function labelOperação() {
         switch (confirmaçãoUsuário?.operação) {
             case "salvar": return "Salvar";
+            case "alterar": return "Alterar";
+            case "remover": return "Remover";
             default: return;
         }
-    }
+    };
 
     function exibirPerfilFormatado() {
         switch (dados.perfil) {
-            case "musico": return "Músico";
             case "maestro": return "Maestro";
+            case "musico": return "Músico";
             default: return "";
         }
-    }
+    };
 
     function fecharToast() {
         if (redirecionar) {
             setMostrarModalConfirmação(false);
             setConfirmaçãoUsuário({});
-            if (confirmaçãoUsuário?.operação) setUsuárioLogado({});
-            navegar("../pagina-inicial");
+            if (confirmaçãoUsuário?.operação === "remover") setUsuárioLogado({});
+            navegar(confirmaçãoUsuário?.operação === "remover" ? "/" : "../pagina-inicial");
         }
     }
 
@@ -45,17 +50,44 @@ export default function ModalConfirmaçãoUsuário() {
             setUsuárioLogado({ ...dados, cadastrado: false });
             setMostrarModalConfirmação(false);
             navegar("../cadastrar-maestro");
+        } else if (dados.perfil === "musico") {
+            setUsuárioLogado({ ...dados, cadastrado: false });
+            setMostrarModalConfirmação(false);
+            navegar("../cadastrar-músico");
         }
-    }
+    };
+
+    async function alterarUsuário(dadosAlterados) {
+        try {
+            const response = await serviçoAlterarUsuário({ ...dadosAlterados, cpf: usuárioLogado.cpf });
+            setUsuárioLogado({ ...usuárioLogado, ...response.data });
+            setRedirecionar(true);
+            mostrarToast(referênciaToast, "Alterado com sucesso! Redirecionando à Página Inicial...", "sucesso");
+        } catch (error) { mostrarToast(referênciaToast, error.response.data.erro, "erro"); }
+    };
+
+    async function removerUsuário() {
+        try {
+            await serviçoRemoverUsuário(usuárioLogado.cpf);
+            setRedirecionar(true);
+            mostrarToast(referênciaToast, "Removido com sucesso! Redirecionando ao Login.", "sucesso");
+        } catch (error) { mostrarToast(referênciaToast, error.response.data.erro, "erro"); }
+    };
 
     function executarOperação() {
-        switch (confirmaçãoUsuário?.operação) {
+        switch (confirmaçãoUsuário.operação) {
             case "salvar":
                 finalizarCadastro();
                 break;
+            case "alterar":
+                alterarUsuário({ email: dados.email, senha: dados.senha, questão: dados.questão, resposta: dados.resposta, cor_tema: dados.cor_tema });
+                break;
+            case "remover":
+                removerUsuário();
+                break;
             default: break;
         }
-    }
+    };
 
     function ocultar() {
         if (!redirecionar) {

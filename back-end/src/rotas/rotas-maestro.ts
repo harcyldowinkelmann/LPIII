@@ -8,3 +8,4 @@ export default RotasMaestro;
 
 RotasMaestro.post("/", ServiçosMaestro.cadastrarMaestro);
 RotasMaestro.get("/:cpf", verificarToken, verificarPerfilMaestro, ServiçosMaestro.buscarMaestro);
+RotasMaestro.patch("/", verificarToken, verificarPerfilMaestro, ServiçosMaestro.atualizarMaestro);

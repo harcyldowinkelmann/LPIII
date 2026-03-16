@@ -42,4 +42,14 @@ export default class ServiçosMaestro {
             return response.status(500).json({ erro: "Erro BD: buscarMaestro" }); 
         }
     }
-};
+
+    static async atualizarMaestro(request, response) {
+        try {
+          const { cpf, estiloRegência, anosExperiência } = request.body;
+          const cpf_encriptado = md5(cpf);
+          await Maestro.update({ usuário: { cpf: cpf_encriptado } },
+            { estiloRegência, anosExperiência });
+          return response.json();
+        } catch (error) { return response.status(500).json({ erro: "Erro BD : atualizarMaestro" }); }
+    }
+}

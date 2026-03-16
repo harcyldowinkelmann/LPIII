@@ -7,3 +7,7 @@ export function serviçoCadastrarMaestro(maestro) {
 export function serviçoBuscarMaestro(cpf) { 
     return servidor.get(`/maestros/${cpf}`); 
 };
+
+export function serviçoAtualizarMaestro(maestro) { 
+    return servidor.patch("/maestros", maestro); 
+};

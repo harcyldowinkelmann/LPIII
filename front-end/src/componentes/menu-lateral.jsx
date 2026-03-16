@@ -23,7 +23,14 @@ export default function MenuLateral({ children }) {
         ]}
     ];
 
-    const opçõesMusico = [];
+    const opçõesMúsico = [
+        { label: "Página Inicial", command: () => navegar("/pagina-inicial") },
+        { label: "Menu", items: [
+            { label: "Cadastrar Usuário", command: () => navegar("/atualizar-usuario"), disabled: usuárioLogado.status !== "ativo" },
+            { label: "Cadastrar Músico", command: () => navegar("/cadastrar-músico") },
+            { label: "Sair do Sistema", command: () => sairSistema() }
+        ]}
+    ];
 
     function sairSistema() {
         setUsuárioLogado({});
@@ -32,7 +39,7 @@ export default function MenuLateral({ children }) {
 
     function opçõesMenu() {
         switch (usuárioLogado.perfil) {
-            case "musico": return opçõesMusico;
+            case "musico": return opçõesMúsico;
             case "maestro": return opçõesMaestro;
             default: return [];
         }

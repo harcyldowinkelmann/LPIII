@@ -14,7 +14,7 @@ import ModalConfirmaçãoUsuário from "../../componentes/modais/modal-confirma�
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { CPF_MÁSCARA } from "../../utilitários/máscaras";
 import { MostrarMensagemErro, checarListaVazia, validarCampoEmail, validarCamposObrigatórios, validarConfirmaçãoSenha, validarConfirmaçãoSenhaOpcional, validarRecuperaçãoAcessoOpcional } from "../../utilitários/validações";
-import { TAMANHOS, TEMA_PADRÃO, estilizarBotão, estilizarCard, estilizarDialog, estilizarDivBotõesAção, estilizarDivCampo, estilizarDivider, estilizarDropdown, estilizarFlex, estilizarFooterDialog, estilizarInputMask, estilizarInputText, estilizarLabel, estilizarLink, estilizarPasswordInput, estilizarPasswordTextInputBorder, estilizarSubtítulo, opçõesCores } from "../../utilitários/estilos";
+import { TAMANHOS, TEMA_PADRÃO, estilizarBotão, estilizarBotãoRemover, estilizarCard, estilizarDialog, estilizarDivBotõesAção, estilizarDivCampo, estilizarDivider, estilizarDropdown, estilizarFlex, estilizarFooterDialog, estilizarInputMask, estilizarInputText, estilizarLabel, estilizarLink, estilizarPasswordInput, estilizarPasswordTextInputBorder, estilizarSubtítulo, opçõesCores } from "../../utilitários/estilos";
 import { serviçoVerificarCpfExistente } from "../../serviços/serviços-usuário";
 
 export default function CadastrarUsuário() {
@@ -71,7 +71,7 @@ export default function CadastrarUsuário() {
 
     function tituloFormulário() {
         if (!usuárioLogado?.perfil) return "Cadastrar Usuário";
-        else return "Consultar Usuário";
+        else return "Alterar Usuário";
     }
 
     function textoRetorno() {
@@ -102,6 +102,11 @@ export default function CadastrarUsuário() {
         }
     }
 
+    function validarConfirmarAlteração() {
+        const camposVálidos = validarCampos();
+        if (camposVálidos) confirmarOperação("alterar");
+    };
+
     function confirmarOperação(operação) {
         setConfirmaçãoUsuário({ ...dados, operação });
         setMostrarModalConfirmação(true);
@@ -112,7 +117,10 @@ export default function CadastrarUsuário() {
             return <Button className={estilizarBotão(dados.cor_tema)} label="Salvar" onClick={validarConfirmarCriação} />;
         } else {
             return (
-                <div className={estilizarDivBotõesAção()}></div>
+                <div className={estilizarDivBotõesAção()}>
+                    <Button className={estilizarBotão(dados.cor_tema)} label="Alterar" onClick={() => validarConfirmarAlteração()} />
+                    <Button className={estilizarBotãoRemover(dados.cor_tema)} label="Remover" onClick={() => confirmarOperação("remover")} />
+                </div>
             );
         }
     }
