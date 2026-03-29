@@ -2,25 +2,33 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { serviçoBuscarMaestro, serviçoCadastrarMaestro, serviçoAtualizarMaestro } from "../../serviços/serviços-maestro";
 import { MostrarMensagemErro, checarListaVazia, validarCamposObrigatórios } from "../../utilitários/validações";
-import { estilizarBotão, estilizarCard, estilizarDivCampo, estilizarFlex, estilizarInputText, estilizarLabel } from "../../utilitários/estilos";
+import { estilizarBotão, estilizarCard, estilizarDivCampo, estilizarFlex, estilizarInputText, estilizarDropdown, estilizarLabel } from "../../utilitários/estilos";
 
 export default function CadastrarMaestro() {
     const referênciaToast = useRef(null);
     const { usuárioLogado, setUsuárioLogado } = useContext(ContextoUsuário);
-    const [dados, setDados] = useState({ formação: "", link_lattes: "", instituição: "" });
+    const [dados, setDados] = useState({ anosExperiência: "", estiloRegência: "" });
     const [erros, setErros] = useState({});
+
+    const opçõesEstiloRegência = [
+        { label: "Clássico", value: "clássico" },
+        { label: "Sinfônico", value: "sinfônico" },
+        { label: "Popular", value: "popular" },
+        { label: "Contemporâneo", value: "contemporâneo" }
+    ];
 
     useEffect(() => {
         async function buscarMaestro() {
             try {
                 const response = await serviçoBuscarMaestro(usuárioLogado.cpf);
                 setDados(response.data);
-            } catch (error) { mostrarToast(referênciaToast, error.response.data.erro, "erro"); }
+            } catch (error) { mostrarToast(referênciaToast, error.response?.data?.erro || "Erro na busca", "erro"); }
         }
         if (usuárioLogado?.cadastrado) buscarMaestro();
     }, [usuárioLogado]);
@@ -32,8 +40,8 @@ export default function CadastrarMaestro() {
     }
 
     function validarCampos() {
-        const { formação, link_lattes, instituição } = dados;
-        let errosCamposObrigatórios = validarCamposObrigatórios({ formação, link_lattes, instituição });
+        const { anosExperiência, estiloRegência } = dados;
+        let errosCamposObrigatórios = validarCamposObrigatórios({ anosExperiência, estiloRegência });
         setErros(errosCamposObrigatórios);
         return checarListaVazia(errosCamposObrigatórios);
     }
@@ -41,21 +49,40 @@ export default function CadastrarMaestro() {
     async function cadastrarMaestro() {
         if (validarCampos()) {
             try {
-                const response = await serviçoCadastrarMaestro({ ...dados, cpf: usuárioLogado.cpf });
+                const payload = {
+                    usuário_info: {
+                        cpf: usuárioLogado.cpf,
+                        nome: usuárioLogado.nome,
+                        perfil: usuárioLogado.perfil,
+                        email: usuárioLogado.email,
+                        senha: usuárioLogado.senha,
+                        questão: usuárioLogado.questão,
+                        resposta: usuárioLogado.resposta,
+                        cor_tema: usuárioLogado.cor_tema
+                    },
+                    anosExperiência: Number(dados.anosExperiência),
+                    estiloRegência: dados.estiloRegência
+                };
+
+                const response = await serviçoCadastrarMaestro(payload);
                 if (response) {
                     setUsuárioLogado({ ...usuárioLogado, cadastrado: true, status: response.data.status, token: response.data.token });
                     mostrarToast(referênciaToast, "Maestro cadastrado com sucesso!", "sucesso");
                 }
-            } catch (error) { mostrarToast(referênciaToast, error.response.data.erro, "erro"); }
+            } catch (error) { mostrarToast(referênciaToast, error.response?.data?.erro || "Erro no cadastro", "erro"); }
         }
     }
 
     async function atualizarMaestro() {
         if (validarCampos()) {
             try {
-                const response = await serviçoAtualizarMaestro({ ...dados, cpf: usuárioLogado.cpf });
+                const response = await serviçoAtualizarMaestro({ 
+                    cpf: usuárioLogado.cpf, 
+                    anosExperiência: Number(dados.anosExperiência), 
+                    estiloRegência: dados.estiloRegência 
+                });
                 if (response) mostrarToast(referênciaToast, "Maestro atualizado com sucesso!", "sucesso");
-            } catch (error) { mostrarToast(referênciaToast, error.response.data.erro, "erro"); }
+            } catch (error) { mostrarToast(referênciaToast, error.response?.data?.erro || "Erro na atualização", "erro"); }
         }
     };
 
@@ -79,19 +106,14 @@ export default function CadastrarMaestro() {
             <Toast ref={referênciaToast} position="bottom-center" />
             <Card title={títuloFormulário()} className={estilizarCard(usuárioLogado.cor_tema)}>
                 <div className={estilizarDivCampo()}>
-                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Formação Acadêmica*:</label>
-                    <InputText name="formação" className={estilizarInputText(erros.formação, 400, usuárioLogado.cor_tema)} value={dados.formação} onChange={alterarEstado} />
-                    <MostrarMensagemErro mensagem={erros.formação} />
+                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Anos de Experiência*:</label>
+                    <InputText name="anosExperiência" className={estilizarInputText(erros.anosExperiência, 400, usuárioLogado.cor_tema)} value={dados.anosExperiência} onChange={alterarEstado} />
+                    <MostrarMensagemErro mensagem={erros.anosExperiência} />
                 </div>
                 <div className={estilizarDivCampo()}>
-                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Link do Lattes*:</label>
-                    <InputText name="link_lattes" className={estilizarInputText(erros.link_lattes, 400, usuárioLogado.cor_tema)} value={dados.link_lattes} onChange={alterarEstado} />
-                    <MostrarMensagemErro mensagem={erros.link_lattes} />
-                </div>
-                <div className={estilizarDivCampo()}>
-                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Instituição de Atuação*:</label>
-                    <InputText name="instituição" className={estilizarInputText(erros.instituição, 400, usuárioLogado.cor_tema)} value={dados.instituição} onChange={alterarEstado} />
-                    <MostrarMensagemErro mensagem={erros.instituição} />
+                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Estilo de Regência*:</label>
+                    <Dropdown name="estiloRegência" className={estilizarDropdown(erros.estiloRegência, usuárioLogado.cor_tema)} value={dados.estiloRegência} options={opçõesEstiloRegência} onChange={alterarEstado} placeholder="-- Selecione --" />
+                    <MostrarMensagemErro mensagem={erros.estiloRegência} />
                 </div>
                 <Button className={estilizarBotão(usuárioLogado.cor_tema)} label={labelBotãoSalvar()} onClick={açãoBotãoSalvar} />
             </Card>
