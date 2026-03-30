@@ -1,10 +1,12 @@
 import { useContext, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { InputMask } from "primereact/inputmask";
 import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
+
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import { serviçoLogarUsuário } from "../../serviços/serviços-usuário";
 import mostrarToast from "../../utilitários/mostrar-toast";
@@ -32,7 +34,7 @@ export default function LogarUsuário() {
                 setUsuárioLogado({ ...response.data?.usuárioLogado, cpf: dados.nome_login, cadastrado: true });
                 navegar("/pagina-inicial");
             } catch (error) { 
-                mostrarToast(referênciaToast, error.response.data.erro, "error"); 
+                mostrarToast(referênciaToast, error.response.data.erro, "erro"); 
             }
         }
     }
@@ -60,7 +62,7 @@ export default function LogarUsuário() {
                 </div>
                 <div className={estilizarFlex("center")}>
                     <Button className={estilizarBotão()} label="Login" onClick={logarUsuário} />
-                    <Link className={estilizarLink()} to="/pagina-inicial">Recuperar Acesso de Usuário</Link>
+                    <Link className={estilizarLink()} to="/recuperar-acesso">Recuperar Acesso de Usuário</Link>
                     <Link className={estilizarLink()} to="/criar-usuario">Cadastrar Usuário</Link>
                 </div>
             </Card>

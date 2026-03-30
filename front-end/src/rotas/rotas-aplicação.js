@@ -19,7 +19,7 @@ export default function RotasAplicação() {
           <Route element={<PáginaInicial/>} path="pagina-inicial"/>
           <Route element={<CadastrarUsuário/>} path="atualizar-usuario"/>
           <Route element={<CadastrarMaestro/>} path="cadastrar-maestro"/>
-          <Route element={<CadastrarMúsico/>} path="cadastrar-músico"/>
+          <Route element={<CadastrarMúsico/>} path="cadastrar-musico"/>
         </Route>
       </Routes>
     </BrowserRouter>

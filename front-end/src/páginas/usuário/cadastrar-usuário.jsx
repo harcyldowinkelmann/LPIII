@@ -1,5 +1,6 @@
 import { useContext, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Dialog } from "primereact/dialog";
@@ -9,6 +10,7 @@ import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
+
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import ModalConfirmaçãoUsuário from "../../componentes/modais/modal-confirmação-usuário";
 import mostrarToast from "../../utilitários/mostrar-toast";
@@ -20,6 +22,7 @@ import { serviçoVerificarCpfExistente } from "../../serviços/serviços-usuári
 export default function CadastrarUsuário() {
     const referênciaToast = useRef(null);
     const { usuárioLogado, mostrarModalConfirmação, setMostrarModalConfirmação, setConfirmaçãoUsuário } = useContext(ContextoUsuário);
+    
     const [dados, setDados] = useState({ 
         cpf: usuárioLogado?.cpf || "",
         nome: usuárioLogado?.nome || "", 
@@ -31,7 +34,9 @@ export default function CadastrarUsuário() {
         resposta: "",
         cor_tema: usuárioLogado?.cor_tema || TEMA_PADRÃO 
     });
+    
     const [erros, setErros] = useState({});
+    
     const opçõesPerfis = [
         { label: "Músico", value: "musico" },
         { label: "Maestro", value: "maestro" }
@@ -49,7 +54,9 @@ export default function CadastrarUsuário() {
         let errosValidaçãoEmail = validarCampoEmail(email);
         let errosConfirmaçãoSenhaOpcional = validarConfirmaçãoSenhaOpcional(senha, confirmação);
         let errosRecuperaçãoAcessoOpcional = validarRecuperaçãoAcessoOpcional(questão, resposta);
+        
         setErros({ ...errosCamposObrigatórios, ...errosConfirmaçãoSenhaOpcional, ...errosRecuperaçãoAcessoOpcional, ...errosValidaçãoEmail });
+        
         return checarListaVazia(errosCamposObrigatórios) && checarListaVazia(errosConfirmaçãoSenhaOpcional) && checarListaVazia(errosValidaçãoEmail) && checarListaVazia(errosRecuperaçãoAcessoOpcional);
     }
 
@@ -59,7 +66,9 @@ export default function CadastrarUsuário() {
             let errosCamposObrigatórios = validarCamposObrigatórios({ perfil, cpf, nome, questão, resposta, senha, confirmação, email });
             let errosValidaçãoEmail = validarCampoEmail(email);
             let errosConfirmaçãoSenha = validarConfirmaçãoSenha(senha, confirmação);
+            
             setErros({ ...errosCamposObrigatórios, ...errosConfirmaçãoSenha, ...errosValidaçãoEmail });
+            
             return checarListaVazia(errosCamposObrigatórios) && checarListaVazia(errosConfirmaçãoSenha) && checarListaVazia(errosValidaçãoEmail);
         }
     }
@@ -125,65 +134,82 @@ export default function CadastrarUsuário() {
         }
     }
 
-    function alinharCentro() { if (!usuárioLogado?.cadastrado) return "center"; }
+    function alinharCentro() { 
+        if (!usuárioLogado?.cadastrado) return "center"; 
+    }
 
     return (
         <div className={estilizarFlex(alinharCentro())}>
             <Toast ref={referênciaToast} position="bottom-center" />
+            
             <Dialog visible={mostrarModalConfirmação} className={estilizarDialog()} header="Confirme seus dados" onHide={limparOcultar} closable={false} footer={<div className={estilizarFooterDialog()}></div>}>
                 <ModalConfirmaçãoUsuário />
             </Dialog>
+            
             <Card title={tituloFormulário()} className={estilizarCard(dados.cor_tema)}>
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Tipo de Perfil*:</label>
                     <Dropdown name="perfil" className={estilizarDropdown(erros.perfil, dados.cor_tema)} value={dados.perfil} options={opçõesPerfis} onChange={alterarEstado} placeholder="-- Selecione --" disabled={usuárioLogado?.perfil} />
                     <MostrarMensagemErro mensagem={erros.perfil} />
                 </div>
+                
                 <Divider className={estilizarDivider(dados.cor_tema)} />
                 <h2 className={estilizarSubtítulo(dados.cor_tema)}>Dados Pessoais</h2>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>CPF*:</label>
                     <InputMask name="cpf" autoClear className={estilizarInputMask(erros.cpf, dados.cor_tema)} mask={CPF_MÁSCARA} size={TAMANHOS.CPF} value={dados.cpf} onChange={alterarEstado} disabled={usuárioLogado?.perfil} />
                     <MostrarMensagemErro mensagem={erros.cpf} />
                 </div>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Nome Completo*:</label>
                     <InputText name="nome" className={estilizarInputText(erros.nome, 400, dados.cor_tema)} value={dados.nome} onChange={alterarEstado} disabled={usuárioLogado?.perfil} />
                     <MostrarMensagemErro mensagem={erros.nome} />
                 </div>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Email*:</label>
                     <InputText name="email" className={estilizarInputText(erros.email, 400, dados.cor_tema)} value={dados.email} onChange={alterarEstado} />
                     <MostrarMensagemErro mensagem={erros.email} />
                 </div>
+                
                 <Divider className={estilizarDivider(dados.cor_tema)} />
                 <h2 className={estilizarSubtítulo(dados.cor_tema)}>Dados de Login</h2>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Senha e Confirmação*:</label>
                     <Password name="senha" inputClassName={estilizarPasswordTextInputBorder(erros.senha, dados.cor_tema)} className={estilizarPasswordInput(erros.senha)} toggleMask value={dados.senha} onChange={alterarEstado} size={TAMANHOS.SENHA} tooltip={usuárioLogado?.token && "Será alterada somente se a senha e a confirmação forem informadas."} />
                     <Password name="confirmação" className={estilizarPasswordInput(dados.cor_tema)} inputClassName={estilizarPasswordTextInputBorder(erros.senha || erros.confirmação_senha, dados.cor_tema)} size={TAMANHOS.SENHA} feedback={false} toggleMask value={dados.confirmação} onChange={alterarEstado} />
                     <MostrarMensagemErro mensagem={erros.senha || erros.confirmação_senha} />
                 </div>
+                
                 <Divider className={estilizarDivider(dados.cor_tema)} />
                 <h2 className={estilizarSubtítulo(dados.cor_tema)}>Recuperação da conta</h2>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Questão de Segurança*:</label>
                     <InputText name="questão" className={estilizarInputText(erros.questão, 400, dados.cor_tema)} placeholder="Ex: Qual era o nome do meu primeiro pet?" value={dados.questão} onChange={alterarEstado} tooltipOptions={{ position: 'top' }} tooltip={usuárioLogado?.token && "Se a resposta não for informada: a alteração de questão será ignorada."} />
                     <MostrarMensagemErro mensagem={erros.questão} />
                 </div>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Resposta*:</label>
                     <InputText name="resposta" className={estilizarInputText(erros.resposta, 400, dados.cor_tema)} value={dados.resposta} onChange={alterarEstado} />
                     <MostrarMensagemErro mensagem={erros.resposta} />
                 </div>
+                
                 <Divider className={estilizarDivider(dados.cor_tema)} />
                 <h2 className={estilizarSubtítulo(dados.cor_tema)}>Configurações:</h2>
+                
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(dados.cor_tema)}>Cor do Tema*:</label>
                     <Dropdown name="cor_tema" className={estilizarDropdown(erros.cor_tema, dados.cor_tema)} value={dados.cor_tema} options={opçõesCores} onChange={alterarEstado} placeholder="-- Selecione --" />
                     <MostrarMensagemErro mensagem={erros.cor_tema} />
                 </div>
+                
                 <ComandosConfirmação />
+                
                 <div className={estilizarFlex("center")}>
                     <Link to={linkRetorno()} className={estilizarLink(dados.cor_tema)}>{textoRetorno()}</Link>
                 </div>

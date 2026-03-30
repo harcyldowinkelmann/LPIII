@@ -1,20 +1,27 @@
 import { useContext, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Dialog } from "primereact/dialog";
 import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
+
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import ModalRecuperarAcesso from "../../componentes/modais/modal-recuperar-acesso";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { CPF_MÁSCARA } from "../../utilitários/máscaras";
-import { serviçoBuscarQuestãoSegurança, serviçoVerificarRespostaCorreta } from "../../serviços/serviços-usuário";
-import { MostrarMensagemErro, checarListaVazia, validarCamposObrigatórios, validarCpf } from "../../utilitários/validações";
-import { TAMANHOS, estilizarBotão, estilizarCard, estilizarDialog, estilizarDivCampo, estilizarFlex, estilizarFooterDialog, estilizarInputMask, estilizarInputText, estilizarLabel, estilizarLink, estilizarParágrafo } from "../../utilitários/estilos";
+import { serviçoBuscarQuestãoSegurança, serviçoVerificarRespostaCorreta } 
+  from "../../serviços/serviços-usuário";
+import { MostrarMensagemErro, checarListaVazia, validarCamposObrigatórios, validarCpf } 
+  from "../../utilitários/validações";
+import { TAMANHOS, estilizarBotão, estilizarCard, estilizarDialog, estilizarDivCampo, estilizarFlex, 
+  estilizarFooterDialog, estilizarInputMask, estilizarInputText, estilizarLabel, estilizarLink, 
+  estilizarParágrafo } from "../../utilitários/estilos";
 
 export default function RecuperarAcesso() {
+
   const referênciaToast = useRef(null);
   const { setCpfVerificado, setNovaSenha, setTokenRecuperação } = useContext(ContextoUsuário);
   const [dados, setDados] = useState({ cpf: "", questão: "", resposta: "", token: "" });
@@ -76,31 +83,36 @@ export default function RecuperarAcesso() {
   return (
     <div className={estilizarFlex("center")}>
       <Toast ref={referênciaToast} position="bottom-center" />
-      <Dialog visible={mostrarModal} className={estilizarDialog()} header="Digite sua nova senha e confirme" onHide={esconderModal} footer={<div className={estilizarFooterDialog()}></div>}>
+      <Dialog visible={mostrarModal} className={estilizarDialog()}
+        header="Digite sua nova senha e confirme" onHide={esconderModal}
+        footer={<div className={estilizarFooterDialog()}></div>}>
         <ModalRecuperarAcesso />
       </Dialog>
       <Card title="Recuperar Acesso de Usuário" className={estilizarCard()}>
         <p className={estilizarParágrafo()}>
-          {`Para recuperar o acesso à sua conta, forneça as informações abaixo:`}
-        </p>
+          {`Para recuperar o acesso à sua conta, forneça as informações abaixo:`}</p>
         <div className={estilizarDivCampo()}>
           <label className={estilizarLabel()}>CPF*:</label>
-          <InputMask name="cpf" className={estilizarInputMask(erros.cpf)} size={TAMANHOS.CPF} mask={CPF_MÁSCARA} autoClear value={dados.cpf} onChange={buscarQuestãoSegurança} />
+          <InputMask name="cpf" className={estilizarInputMask(erros.cpf)} size={TAMANHOS.CPF}
+            mask={CPF_MÁSCARA} autoClear value={dados.cpf} onChange={buscarQuestãoSegurança} />
         </div>
         <div className={estilizarDivCampo()}>
-          <label className={estilizarLabel()}>Questão de segurança:</label>
-          <InputText name="questão" className={estilizarInputText(erros.questão, 400)} value={dados.questão} disabled />
+          <label className={estilizarLabel()}>Questão de segurança*:</label>
+          <InputText name="questão" className={estilizarInputText(erros.questão, 400)}
+            value={dados.questão} disabled />
         </div>
         <div className={estilizarDivCampo()}>
-          <label className={estilizarLabel()}>Resposta*: </label>
-          <InputText name="resposta" className={estilizarInputText(erros.resposta, 350)} disabled={desabilitar} value={dados.resposta} onChange={alterarEstado} />
+          <label className={estilizarLabel()}>Resposta*:</label>
+          <InputText name="resposta" className={estilizarInputText(erros.resposta, 350)}
+            disabled={desabilitar} value={dados.resposta} onChange={alterarEstado} />
           <MostrarMensagemErro mensagem={erros.resposta} />
         </div>
         <div className={estilizarFlex()}>
-          <Button className={estilizarBotão()} label="Confirmar" disabled={desabilitar} onClick={validarConfirmarRecuperaçãoAcesso} />
+          <Button className={estilizarBotão()} label="Confirmar" disabled={desabilitar}
+            onClick={validarConfirmarRecuperaçãoAcesso} />
           <Link to="/" className={estilizarLink()}>Voltar ao Login</Link>
         </div>
       </Card>
     </div>
   );
-}
+};

@@ -17,8 +17,8 @@ export default function MenuLateral({ children }) {
     const opçõesMaestro = [
         { label: "Página Inicial", command: () => navegar("/pagina-inicial") },
         { label: "Menu", items: [
-            { label: "Cadastrar Usuário", command: () => navegar("/atualizar-usuario"), disabled: usuárioLogado.status !== "ativo" },
-            { label: "Cadastrar Maestro", command: () => navegar("/cadastrar-maestro") },
+            { label: "Alterar Usuário", command: () => navegar("/atualizar-usuario"), disabled: usuárioLogado.status !== "ativo" },
+            { label: "Alterar Maestro", command: () => navegar("/cadastrar-maestro") },
             { label: "Sair do Sistema", command: () => sairSistema() }
         ]}
     ];
@@ -26,8 +26,8 @@ export default function MenuLateral({ children }) {
     const opçõesMúsico = [
         { label: "Página Inicial", command: () => navegar("/pagina-inicial") },
         { label: "Menu", items: [
-            { label: "Cadastrar Usuário", command: () => navegar("/atualizar-usuario"), disabled: usuárioLogado.status !== "ativo" },
-            { label: "Cadastrar Músico", command: () => navegar("/cadastrar-músico") },
+            { label: "Alterar Usuário", command: () => navegar("/atualizar-usuario"), disabled: usuárioLogado.status !== "ativo" },
+            { label: "Alterar Músico", command: () => navegar("/cadastrar-musico") },
             { label: "Sair do Sistema", command: () => sairSistema() }
         ]}
     ];

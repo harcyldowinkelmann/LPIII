@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Card } from "primereact/card";
 import { Image } from "primereact/image";
+
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import computação from "../../imagens/imagem.jpg";
 import { estilizarCard, estilizarCardHeaderCentralizado, estilizarPáginaÚnica } from "../../utilitários/estilos";
