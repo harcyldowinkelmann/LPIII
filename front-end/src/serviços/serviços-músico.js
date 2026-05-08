@@ -11,3 +11,8 @@ export function serviçoAtualizarMúsico(músico) {
 export function serviçoBuscarMúsico(cpf) { 
   return servidor.get(`/musicos/${cpf}`); 
 };
+
+export function serviçoCadastrarAvaliacao(avaliacao) { return servidor.post("/musicos/avaliacoes", avaliacao); }
+export function serviçoRemoverAvaliacao(id) { return servidor.delete(`/musicos/avaliacoes/${id}`); }
+export function serviçoBuscarAvaliacoesMusico(cpf) { return servidor.get(`/musicos/avaliacoes/musico/${cpf}`); }
+export function serviçoBuscarAudicoes() { return servidor.get("/musicos/avaliacoes/audicoes"); }
