@@ -1,12 +1,10 @@
 import { useContext, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { InputMask } from "primereact/inputmask";
 import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
-
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import { serviçoLogarUsuário } from "../../serviços/serviços-usuário";
 import mostrarToast from "../../utilitários/mostrar-toast";

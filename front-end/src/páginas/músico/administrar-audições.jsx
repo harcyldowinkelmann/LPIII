@@ -7,10 +7,9 @@ import { DataTable } from "primereact/datatable";
 import { Divider } from "primereact/divider";
 import { Dropdown } from "primereact/dropdown";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
-
-import ContextoMaestro from "../../contextos/contexto-maestro";
+import ContextoMúsico from "../../contextos/contexto-músico";
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import { serviçoBuscarAudicoesMaestro } from "../../serviços/serviços-maestro";
+import { serviçoBuscarAudicoesMusico } from "../../serviços/serviços-músico";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { TAMANHOS, estilizarBotão, estilizarBotãoRetornar, estilizarBotãoTabela, estilizarCard,
     estilizarColunaConsultar, estilizarColumnHeader, estilizarDataTable, estilizarDataTablePaginator,
@@ -20,7 +19,7 @@ from "../../utilitários/estilos";
 export default function AdministrarAudicoes() {
     const referênciaToast = useRef(null);
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { audicaoConsultada, setAudicaoConsultada } = useContext(ContextoMaestro);
+    const { audicaoConsultada, setAudicaoConsultada } = useContext(ContextoMúsico);
     const [listaAudicoes, setListaAudicoes] = useState([]);
     const navegar = useNavigate();
 
@@ -77,16 +76,16 @@ export default function AdministrarAudicoes() {
 
     useEffect(() => {
         let desmontado = false;
-        async function buscarAudicoesMaestro() {
+        async function buscarAudicoesMusico() {
             try {
-                const response = await serviçoBuscarAudicoesMaestro(usuárioLogado.cpf);
+                const response = await serviçoBuscarAudicoesMusico(usuárioLogado.cpf);
                 if (!desmontado && response.data) { setListaAudicoes(response.data); }
             } catch (error) {
                 const erro = error.response.data.erro;
                 if (erro) mostrarToast(referênciaToast, erro, "error");
             }
         }
-        buscarAudicoesMaestro();
+        buscarAudicoesMusico();
         return () => desmontado = true;
     }, [usuárioLogado.cpf]);
 

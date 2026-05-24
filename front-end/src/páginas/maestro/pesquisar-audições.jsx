@@ -8,10 +8,9 @@ import { Divider } from "primereact/divider";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
-
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import ContextoMúsico from "../../contextos/contexto-músico";
-import { serviçoBuscarAudicoes } from "../../serviços/serviços-músico";
+import ContextoMaestro from "../../contextos/contexto-maestro";
+import { serviçoBuscarAudicoes } from "../../serviços/serviços-maestro";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { TAMANHOS, estilizarBotãoRetornar, estilizarBotãoTabela, estilizarCard,
     estilizarColumnHeader, estilizarColunaConsultar, estilizarDataTable, estilizarDataTablePaginator,
@@ -21,7 +20,7 @@ from "../../utilitários/estilos";
 export default function PesquisarAudicoes() {
     const referênciaToast = useRef(null);
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { audicaoConsultada, setAudicaoConsultada, setAudicaoSelecionada } = useContext(ContextoMúsico);
+    const { audicaoConsultada, setAudicaoConsultada, setAudicaoSelecionada } = useContext(ContextoMaestro);
     const [listaAudicoes, setListaAudicoes] = useState([]);
     const navegar = useNavigate();
 
@@ -99,7 +98,7 @@ export default function PesquisarAudicoes() {
                     
                     <Column bodyClassName={estilizarColunaConsultar()} body={ConsultarTemplate}
                         headerClassName={estilizarColumnHeader(usuárioLogado.cor_tema)} />
-                    <Column field="maestro.usuário.nome" header="Nome do Maestro" filter showFilterOperator={false}
+                    <Column field="músico.usuário.nome" header="Nome do Músico" filter showFilterOperator={false}
                         headerClassName={estilizarColumnHeader(usuárioLogado.cor_tema)} sortable />
                     <Column field="título" header="Título" filter showFilterOperator={false}
                         headerClassName={estilizarColumnHeader(usuárioLogado.cor_tema)} sortable />

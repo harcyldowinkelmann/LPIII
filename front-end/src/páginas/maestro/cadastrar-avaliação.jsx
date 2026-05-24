@@ -7,10 +7,9 @@ import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
-
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import ContextoMúsico from "../../contextos/contexto-músico";
-import { serviçoCadastrarAvaliacao, serviçoRemoverAvaliacao } from "../../serviços/serviços-músico";
+import ContextoMaestro from "../../contextos/contexto-maestro";
+import { serviçoCadastrarAvaliacao, serviçoRemoverAvaliacao } from "../../serviços/serviços-maestro";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { MostrarMensagemErro, checarListaVazia, validarCamposObrigatórios } from "../../utilitários/validações";
 import { estilizarBotão, estilizarBotãoRetornar, estilizarBotãoRemover, estilizarCard,
@@ -20,7 +19,7 @@ import { estilizarBotão, estilizarBotãoRetornar, estilizarBotãoRemover, estil
 export default function CadastrarAvaliacao() {
     const referênciaToast = useRef(null);
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { avaliacaoConsultada, audicaoSelecionada } = useContext(ContextoMúsico);
+    const { avaliacaoConsultada, audicaoSelecionada } = useContext(ContextoMaestro);
     const [dados, setDados] = useState({ 
         id_audicao: audicaoSelecionada?.id || "",
         aprovado: avaliacaoConsultada?.aprovado || false,

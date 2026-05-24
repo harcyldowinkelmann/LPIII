@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import Maestro from "./maestro";
+import Músico from "./músico";
 import Avaliação from "./avaliação";
 
 export enum Tipo { 
@@ -41,8 +41,8 @@ export default class Audição extends BaseEntity {
     @Column({ type: "enum", enum: StatusAudição })
     status: StatusAudição;
 
-    @ManyToOne(() => Maestro, (maestro) => maestro.audições, { onDelete: "CASCADE" })
-    maestro: Maestro;
+    @ManyToOne(() => Músico, (músico) => músico.audições, { onDelete: "CASCADE" })
+    músico: Músico;
 
     @OneToMany(() => Avaliação, (avaliação) => avaliação.audição)
     avaliações: Avaliação[];

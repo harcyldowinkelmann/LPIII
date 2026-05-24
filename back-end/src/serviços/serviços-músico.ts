@@ -3,7 +3,6 @@ import { getManager } from "typeorm";
 import Usuário, { Status } from "../entidades/usuário";
 import Músico from '../entidades/músico';
 import Audição from "../entidades/audição";
-import Avaliação from "../entidades/avaliação";
 import ServiçosUsuário from "./serviços-usuário";
 
 export default class ServiçosMúsico { 
@@ -47,44 +46,56 @@ export default class ServiçosMúsico {
     } catch (error) { return response.status(500).json({ erro: "Erro BD : buscarMúsico" }); }
   }
 
-  static async cadastrarAvaliacao(request, response) {
+  static async cadastrarAudicao(request, response) {
     try {
-      const { id_audicao, aprovado, parecer_tecnico, cpf } = request.body;
+      const { título, tipo, naipe, data_audicao, descrição, remunerada, status, cpf } = request.body;
       const cpf_encriptado = md5(cpf);
-      const músico = await Músico.findOne({ where: { usuário: cpf_encriptado } });
-      const audição = await Audição.findOne(id_audicao);
-      const avaliacoes = await Avaliação.find({ where: { músico, audição } });
-
-      if (avaliacoes.length > 0) return response.status(404).json({ erro: "O músico já cadastrou avaliação para a audição." });
-
-      await Avaliação.create({ aprovado, parecer_tecnico, músico, audição }).save();
+      const músico = await Músico.findOne({ where: { usuário: cpf_encriptado }, relations: ["usuário"] });
+      await Audição.create({ título, tipo, naipe, data_audicao, descrição, remunerada, status, músico }).save();
       return response.json();
-    } catch (error) { return response.status(500).json({ erro: "Erro BD: cadastrarAvaliacao" }); }
+    } catch (error) { return response.status(500).json({ erro: "Erro BD: cadastrarAudicao" }); }
   }
 
-  static async removerAvaliacao(request, response) {
+  static async alterarAudicao(request, response) {
     try {
-      const id = request.params.id;
-      await Avaliação.delete(id);
+      const { id, título, tipo, naipe, data_audicao, descrição, remunerada, status } = request.body;
+      await Audição.update(id, { título, tipo, naipe, data_audicao, descrição, remunerada, status });
       return response.json();
-    } catch (error) { return response.status(500).json({ erro: "Erro BD: removerAvaliacao" }); }
+    } catch (error) { return response.status(500).json({ erro: "Erro BD: alterarAudicao" }); }
   }
 
-  static async buscarAvaliacoesMusico(request, response) {
+  static async removerAudicao(request, response) {
+    try {
+      const id_audicao = request.params.id;
+      const audicao = await Audição.findOne(id_audicao);
+      await Audição.remove(audicao);
+      return response.json();
+    } catch (error) { return response.status(500).json({ erro: "Erro BD: removerAudicao" }); }
+  }
+
+  static async buscarAudicoesMusico(request, response) {
     try {
       const cpf_encriptado = md5(request.params.cpf);
-      const avaliacoes = await Avaliação.find({ 
+      const audicoes = await Audição.find({
         where: { músico: { usuário: cpf_encriptado } },
-        relations: ["músico", "músico.usuário", "audição", "audição.maestro", "audição.maestro.usuário"] 
+        relations: ["músico", "músico.usuário"]
       });
-      return response.json(avaliacoes);
-    } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAvaliacoesMusico" }); }
+      return response.json(audicoes);
+    } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAudicoesMusico" }); }
   }
 
-  static async buscarAudicoes(request, response) {
+  static filtrarNaipesEliminandoRepetição(audicoes: Audição[]) {
+    let naipes: { label: string, value: string }[] = audicoes.filter((audicao, indice, audicoes_antes_filtrar) =>
+      audicoes_antes_filtrar.findIndex(audicao_anterior => audicao_anterior.naipe === audicao.naipe) === indice
+    ).map(audicao => ({ label: audicao.naipe, value: audicao.naipe }));
+    return naipes;
+  }
+
+  static async buscarNaipesAudicoes(request, response) {
     try {
-      const audicoes = await Audição.find({ relations: ["maestro", "maestro.usuário"] });
-      return response.json(audicoes);
-    } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAudicoes" }); }
+      const audicoes = await Audição.find();
+      const naipes = ServiçosMúsico.filtrarNaipesEliminandoRepetição(audicoes);
+      return response.json(naipes.sort());
+    } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarNaipesAudicoes" }); }
   }
 }

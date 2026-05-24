@@ -3,6 +3,7 @@ import { getManager } from "typeorm";
 import Usuário, { Status } from "../entidades/usuário";
 import Maestro from "../entidades/maestro";
 import Audição from "../entidades/audição";
+import Avaliação from "../entidades/avaliação";
 import ServiçosUsuário from "./serviços-usuário";
 
 export default class ServiçosMaestro {
@@ -54,42 +55,45 @@ export default class ServiçosMaestro {
         } catch (error) { return response.status(500).json({ erro: "Erro BD : atualizarMaestro" }); }
     }
 
-    static async cadastrarAudicao(request, response) {
+    static async cadastrarAvaliacao(request, response) {
         try {
-            const { título, tipo, naipe, data_audicao, descrição, remunerada, status, cpf } = request.body;
+            const { id_audicao, aprovado, parecer_tecnico, cpf } = request.body;
             const cpf_encriptado = md5(cpf);
-            const maestro = await Maestro.findOne({ where: { usuário: cpf_encriptado }, relations: ["usuário"] });
-            await Audição.create({ título, tipo, naipe, data_audicao, descrição, remunerada, status, maestro }).save();
+            const maestro = await Maestro.findOne({ where: { usuário: cpf_encriptado } });
+            const audição = await Audição.findOne(id_audicao);
+            const avaliacoes = await Avaliação.find({ where: { maestro, audição } });
+
+            if (avaliacoes.length > 0) return response.status(404).json({ erro: "O maestro já cadastrou avaliação para a audição." });
+
+            await Avaliação.create({ aprovado, parecer_tecnico, maestro, audição }).save();
             return response.json();
-        } catch (error) { return response.status(500).json({ erro: "Erro BD: cadastrarAudicao" }); }
+        } catch (error) { return response.status(500).json({ erro: "Erro BD: cadastrarAvaliacao" }); }
     }
 
-    static async alterarAudicao(request, response) {
+    static async removerAvaliacao(request, response) {
         try {
-            const { id, título, tipo, naipe, data_audicao, descrição, remunerada, status } = request.body;
-            await Audição.update(id, { título, tipo, naipe, data_audicao, descrição, remunerada, status });
+            const id = request.params.id;
+            await Avaliação.delete(id);
             return response.json();
-        } catch (error) { return response.status(500).json({ erro: "Erro BD: alterarAudicao" }); }
+        } catch (error) { return response.status(500).json({ erro: "Erro BD: removerAvaliacao" }); }
     }
 
-    static async removerAudicao(request, response) {
-        try {
-            const id_audicao = request.params.id;
-            const audicao = await Audição.findOne(id_audicao);
-            await Audição.remove(audicao);
-            return response.json();
-        } catch (error) { return response.status(500).json({ erro: "Erro BD: removerAudicao" }); }
-    }
-
-    static async buscarAudicoesMaestro(request, response) {
+    static async buscarAvaliacoesMaestro(request, response) {
         try {
             const cpf_encriptado = md5(request.params.cpf);
-            const audicoes = await Audição.find({
+            const avaliacoes = await Avaliação.find({ 
                 where: { maestro: { usuário: cpf_encriptado } },
-                relations: ["maestro", "maestro.usuário"]
+                relations: ["maestro", "maestro.usuário", "audição", "audição.músico", "audição.músico.usuário"] 
             });
+            return response.json(avaliacoes);
+        } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAvaliacoesMaestro" }); }
+    }
+
+    static async buscarAudicoes(request, response) {
+        try {
+            const audicoes = await Audição.find({ relations: ["músico", "músico.usuário"] });
             return response.json(audicoes);
-        } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAudicoesMaestro" }); }
+        } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAudicoes" }); }
     }
 
     static filtrarNaipesEliminandoRepetição(audicoes: Audição[]) {

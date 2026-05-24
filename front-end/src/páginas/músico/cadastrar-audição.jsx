@@ -8,10 +8,9 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
-
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import ContextoMaestro from "../../contextos/contexto-maestro";
-import { serviçoAlterarAudicao, serviçoCadastrarAudicao, serviçoRemoverAudicao, serviçoBuscarNaipesAudicoes } from "../../serviços/serviços-maestro";
+import ContextoMúsico from "../../contextos/contexto-músico";
+import { serviçoAlterarAudicao, serviçoCadastrarAudicao, serviçoRemoverAudicao, serviçoBuscarNaipesAudicoes } from "../../serviços/serviços-músico";
 import mostrarToast from "../../utilitários/mostrar-toast";
 import { MostrarMensagemErro, checarListaVazia, validarCamposObrigatórios } from "../../utilitários/validações";
 import { estilizarBotão, estilizarBotãoRemover, estilizarBotãoRetornar, estilizarCard, estilizarCheckbox, estilizarDivCampo, estilizarDivider, estilizarDropdown, estilizarFlex, estilizarInlineFlex, estilizarInputText, estilizarInputTextarea, estilizarLabel } from "../../utilitários/estilos";
@@ -19,7 +18,7 @@ import { estilizarBotão, estilizarBotãoRemover, estilizarBotãoRetornar, estil
 export default function CadastrarAudicao() {
     const referênciaToast = useRef(null);
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { audicaoConsultada } = useContext(ContextoMaestro);
+    const { audicaoConsultada } = useContext(ContextoMúsico);
     const [dados, setDados] = useState({ 
         título: audicaoConsultada?.título || "",
         tipo: audicaoConsultada?.tipo || "",

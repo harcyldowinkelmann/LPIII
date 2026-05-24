@@ -9,9 +9,11 @@ export default RotasMúsico;
 
 RotasMúsico.post("/", ServiçosMúsico.cadastrarMúsico);
 RotasMúsico.patch("/", verificarToken, verificarPerfilMúsico, ServiçosMúsico.atualizarMúsico);
-RotasMúsico.get("/:cpf", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarMúsico);
 
-RotasMúsico.post("/avaliacoes", verificarToken, verificarPerfilMúsico, ServiçosMúsico.cadastrarAvaliacao);
-RotasMúsico.delete("/avaliacoes/:id", verificarToken, verificarPerfilMúsico, ServiçosMúsico.removerAvaliacao);
-RotasMúsico.get("/avaliacoes/musico/:cpf", verificarToken, verificarPerfilMúsico, verificarErroConteúdoToken, ServiçosMúsico.buscarAvaliacoesMusico);
-RotasMúsico.get("/avaliacoes/audicoes", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarAudicoes);
+RotasMúsico.post("/audicoes", verificarToken, verificarPerfilMúsico, ServiçosMúsico.cadastrarAudicao);
+RotasMúsico.patch("/audicoes", verificarToken, verificarPerfilMúsico, ServiçosMúsico.alterarAudicao);
+RotasMúsico.delete("/audicoes/:id", verificarToken, verificarPerfilMúsico, ServiçosMúsico.removerAudicao);
+RotasMúsico.get("/audicoes/musico/:cpf", verificarToken, verificarPerfilMúsico, verificarErroConteúdoToken, ServiçosMúsico.buscarAudicoesMusico);
+RotasMúsico.get("/audicoes/naipes", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarNaipesAudicoes);
+
+RotasMúsico.get("/:cpf", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarMúsico);

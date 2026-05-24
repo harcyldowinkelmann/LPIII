@@ -12,8 +12,8 @@ export function serviçoAtualizarMaestro(maestro) {
   return servidor.patch("/maestros", maestro); 
 };
 
-export function serviçoCadastrarAudicao(audicao) { return servidor.post("/maestros/audicoes", audicao); }
-export function serviçoAlterarAudicao(audicao) { return servidor.patch("/maestros/audicoes", audicao); }
-export function serviçoRemoverAudicao(id) { return servidor.delete(`/maestros/audicoes/${id}`); }
-export function serviçoBuscarAudicoesMaestro(cpf) { return servidor.get(`/maestros/audicoes/maestro/${cpf}`); }
+export function serviçoCadastrarAvaliacao(avaliacao) { return servidor.post("/maestros/avaliacoes", avaliacao); }
+export function serviçoRemoverAvaliacao(id) { return servidor.delete(`/maestros/avaliacoes/${id}`); }
+export function serviçoBuscarAvaliacoesMaestro(cpf) { return servidor.get(`/maestros/avaliacoes/maestro/${cpf}`); }
 export function serviçoBuscarNaipesAudicoes() { return servidor.get("/maestros/audicoes/naipes"); }
+export function serviçoBuscarAudicoes() { return servidor.get("/maestros/audicoes"); }

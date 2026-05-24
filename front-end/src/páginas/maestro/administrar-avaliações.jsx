@@ -8,20 +8,19 @@ import { Divider } from "primereact/divider";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
-
+import ContextoMaestro from "../../contextos/contexto-maestro";
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import ContextoMúsico from "../../contextos/contexto-músico";
+import { serviçoBuscarAvaliacoesMaestro } from "../../serviços/serviços-maestro";
 import mostrarToast from "../../utilitários/mostrar-toast";
-import { serviçoBuscarAvaliacoesMusico } from "../../serviços/serviços-músico";
 import { TAMANHOS, estilizarBotão, estilizarBotãoRetornar, estilizarBotãoTabela, estilizarCard,
-    estilizarColumnHeader, estilizarColunaConsultar, estilizarDataTable, estilizarDataTablePaginator,
+    estilizarColunaConsultar, estilizarColumnHeader, estilizarDataTable, estilizarDataTablePaginator,
     estilizarDivider, estilizarFilterMenu, estilizarFlex, estilizarTriStateCheckbox }
 from "../../utilitários/estilos";
 
 export default function AdministrarAvaliacoes() {
     const referênciaToast = useRef(null);
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { avaliacaoConsultada, setAvaliacaoConsultada, setAudicaoSelecionada } = useContext(ContextoMúsico);
+    const { avaliacaoConsultada, setAvaliacaoConsultada, setAudicaoSelecionada } = useContext(ContextoMaestro);
     const [listaAvaliacoes, setListaAvaliacoes] = useState([]);
     const navegar = useNavigate();
 
@@ -80,13 +79,13 @@ export default function AdministrarAvaliacoes() {
 
     useEffect(() => {
         let desmontado = false;
-        async function buscarAvaliacoesMusico() {
+        async function buscarAvaliacoesMaestro() {
             try {
-                const response = await serviçoBuscarAvaliacoesMusico(usuárioLogado.cpf);
+                const response = await serviçoBuscarAvaliacoesMaestro(usuárioLogado.cpf);
                 if (!desmontado && response.data) setListaAvaliacoes(response.data);
             } catch (error) { mostrarToast(referênciaToast, error.response.data.erro, "error"); }
         }
-        buscarAvaliacoesMusico();
+        buscarAvaliacoesMaestro();
         return () => desmontado = true;
     }, [usuárioLogado.cpf]);
 
@@ -102,7 +101,7 @@ export default function AdministrarAvaliacoes() {
                     
                     <Column bodyClassName={estilizarColunaConsultar()} body={ConsultarTemplate}
                         headerClassName={estilizarColumnHeader(usuárioLogado.cor_tema)} />
-                    <Column field="audição.maestro.usuário.nome" header="Maestro" filter showFilterOperator={false}
+                    <Column field="audição.músico.usuário.nome" header="Músico" filter showFilterOperator={false}
                         headerClassName={estilizarColumnHeader(usuárioLogado.cor_tema)} sortable />
                     <Column headerClassName={estilizarColumnHeader(usuárioLogado.cor_tema)}
                         field="audição.tipo" header="Tipo" filter filterMatchMode="equals"

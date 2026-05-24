@@ -6,18 +6,17 @@ import { Checkbox } from "primereact/checkbox";
 import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-
 import ContextoUsuário from "../../contextos/contexto-usuário";
-import ContextoMúsico from "../../contextos/contexto-músico";
+import ContextoMaestro from "../../contextos/contexto-maestro";
 import { estilizarBotãoRetornar, estilizarCard, estilizarCheckbox, estilizarDivCampo,
     estilizarDivider, estilizarFlex, estilizarInlineFlex, estilizarInputText, estilizarLabel }
 from "../../utilitários/estilos";
 
 export default function ConsultarAudicao() {
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { audicaoConsultada, audicaoAvaliacao } = useContext(ContextoMúsico);
+    const { audicaoConsultada, audicaoAvaliacao } = useContext(ContextoMaestro);
     const dados = {
-        nome_maestro: audicaoConsultada?.maestro?.usuário?.nome || audicaoAvaliacao?.maestro?.usuário?.nome,
+        nome_músico: audicaoConsultada?.músico?.usuário?.nome || audicaoAvaliacao?.músico?.usuário?.nome,
         título: audicaoConsultada?.título || audicaoAvaliacao?.título,
         tipo: audicaoConsultada?.tipo || audicaoAvaliacao?.tipo,
         naipe: audicaoConsultada?.naipe || audicaoAvaliacao?.naipe,
@@ -37,9 +36,9 @@ export default function ConsultarAudicao() {
         <div className={estilizarFlex()}>
             <Card title="Consultar Audição" className={estilizarCard(usuárioLogado.cor_tema)}>
                 <div className={estilizarDivCampo()}>
-                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Maestro*:</label>
-                    <InputText name="nome_maestro" className={estilizarInputText(null, 400, usuárioLogado.cor_tema)}
-                        value={dados.nome_maestro} disabled />
+                    <label className={estilizarLabel(usuárioLogado.cor_tema)}>Músico*:</label>
+                    <InputText name="nome_músico" className={estilizarInputText(null, 400, usuárioLogado.cor_tema)}
+                        value={dados.nome_músico} disabled />
                 </div>
                 <div className={estilizarDivCampo()}>
                     <label className={estilizarLabel(usuárioLogado.cor_tema)}>Título*:</label>

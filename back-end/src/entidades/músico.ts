@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import Usuário from "./usuário";
-import Avaliação from "./avaliação";
+import Audição from "./audição";
 
 export enum NívelExperiência { 
     INICIANTE = "iniciante", 
@@ -20,8 +20,8 @@ export default class Músico extends BaseEntity {
     @Column({ type: "enum", enum: NívelExperiência })
     nívelExperiência: NívelExperiência;
 
-    @OneToMany(() => Avaliação, (avaliação) => avaliação.músico)
-    avaliações: Avaliação[];
+    @OneToMany(() => Audição, (audição) => audição.músico)
+    audições: Audição[];
 
     @OneToOne(() => Usuário, (usuário) => usuário.músico, { onDelete: "CASCADE" })
     @JoinColumn()

@@ -12,7 +12,8 @@ export function serviçoBuscarMúsico(cpf) {
   return servidor.get(`/musicos/${cpf}`); 
 };
 
-export function serviçoCadastrarAvaliacao(avaliacao) { return servidor.post("/musicos/avaliacoes", avaliacao); }
-export function serviçoRemoverAvaliacao(id) { return servidor.delete(`/musicos/avaliacoes/${id}`); }
-export function serviçoBuscarAvaliacoesMusico(cpf) { return servidor.get(`/musicos/avaliacoes/musico/${cpf}`); }
-export function serviçoBuscarAudicoes() { return servidor.get("/musicos/avaliacoes/audicoes"); }
+export function serviçoCadastrarAudicao(audicao) { return servidor.post("/musicos/audicoes", audicao); }
+export function serviçoAlterarAudicao(audicao) { return servidor.patch("/musicos/audicoes", audicao); }
+export function serviçoRemoverAudicao(id) { return servidor.delete(`/musicos/audicoes/${id}`); }
+export function serviçoBuscarAudicoesMusico(cpf) { return servidor.get(`/musicos/audicoes/musico/${cpf}`); }
+export function serviçoBuscarNaipesAudicoes() { return servidor.get("/musicos/audicoes/naipes"); }
