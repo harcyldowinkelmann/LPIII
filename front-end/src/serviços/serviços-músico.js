@@ -17,3 +17,4 @@ export function serviçoAlterarAudicao(audicao) { return servidor.patch("/musico
 export function serviçoRemoverAudicao(id) { return servidor.delete(`/musicos/audicoes/${id}`); }
 export function serviçoBuscarAudicoesMusico(cpf) { return servidor.get(`/musicos/audicoes/musico/${cpf}`); }
 export function serviçoBuscarNaipesAudicoes() { return servidor.get("/musicos/audicoes/naipes"); }
+export function serviçoBuscarAvaliacoesAudicao(id_audicao) { return servidor.get(`/musicos/avaliacoes/${id_audicao}`); }

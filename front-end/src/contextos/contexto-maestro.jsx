@@ -8,13 +8,15 @@ export function ProvedorMaestro({ children }) {
     const [audicaoConsultada, setAudicaoConsultada] = useState(null);
     const [audicaoSelecionada, setAudicaoSelecionada] = useState(null);
     const [audicaoAvaliacao, setAudicaoAvaliacao] = useState(null);
+    const [musicoProponente, setMusicoProponente] = useState(null);
 
     return (
         <ContextoMaestro.Provider value={{
             avaliacaoConsultada, setAvaliacaoConsultada,
             audicaoConsultada, setAudicaoConsultada,
             audicaoSelecionada, setAudicaoSelecionada,
-            audicaoAvaliacao, setAudicaoAvaliacao
+            audicaoAvaliacao, setAudicaoAvaliacao,
+            musicoProponente, setMusicoProponente
         }}>
             {children}
         </ContextoMaestro.Provider>

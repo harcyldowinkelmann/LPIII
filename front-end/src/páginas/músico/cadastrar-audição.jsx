@@ -60,6 +60,8 @@ export default function CadastrarAudicao() {
 
     function retornarAdministrarAudicoes() { navegar("../administrar-audições"); }
 
+    function mostrarAvaliacoes() { navegar("../pesquisar-avaliações"); };
+
     async function cadastrarAudicao() {
         if (validarCampos()) {
             try {
@@ -92,6 +94,7 @@ export default function CadastrarAudicao() {
                     <Button className={estilizarBotãoRetornar()} label="Retornar" onClick={retornarAdministrarAudicoes} />
                     <Button className={estilizarBotãoRemover()} label="Remover" onClick={removerAudicao} />
                     <Button className={estilizarBotão()} label="Alterar" onClick={alterarAudicao} />
+                    <Button className={estilizarBotão()} label="Avaliações" onClick={mostrarAvaliacoes}/>
                 </div>
             );
         } else {

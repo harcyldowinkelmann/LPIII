@@ -16,6 +16,10 @@ import ConsultarAudicao from "../páginas/maestro/consultar-audição";
 import CadastrarMúsico from "../páginas/músico/cadastrar-músico";
 import AdministrarAudicoes from "../páginas/músico/administrar-audições";
 import CadastrarAudicao from "../páginas/músico/cadastrar-audição";
+import ConsultarMusico from "../páginas/maestro/consultar-músico";
+import PesquisarAvaliacoes from "../páginas/músico/pesquisar-avaliações";
+import ConsultarAvaliacao from "../páginas/músico/consultar-avaliação";
+import ConsultarMaestro from "../páginas/músico/consultar-maestro";
 
 export default function RotasAplicação() {
   return (
@@ -35,12 +39,16 @@ export default function RotasAplicação() {
             <Route element={<CadastrarAvaliacao/>} path="cadastrar-avaliação"/>
             <Route element={<PesquisarAudicoes/>} path="pesquisar-audições"/>
             <Route element={<ConsultarAudicao/>} path="consultar-audição"/>
+            <Route element={<ConsultarMusico/>} path="consultar-músico"/>
           </Route>
 
           <Route element={<ProvedorMúsico><RotasMúsico/></ProvedorMúsico>}>
             <Route element={<CadastrarMúsico/>} path="cadastrar-musico"/>
             <Route element={<AdministrarAudicoes/>} path="administrar-audições"/>
             <Route element={<CadastrarAudicao/>} path="cadastrar-audição"/>
+            <Route element={<PesquisarAvaliacoes/>} path="pesquisar-avaliações"/>
+            <Route element={<ConsultarAvaliacao/>} path="consultar-avaliação"/>
+            <Route element={<ConsultarMaestro/>} path="consultar-maestro"/>
           </Route>
         </Route>
       </Routes>

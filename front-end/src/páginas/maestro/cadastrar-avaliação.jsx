@@ -19,7 +19,7 @@ import { estilizarBotão, estilizarBotãoRetornar, estilizarBotãoRemover, estil
 export default function CadastrarAvaliacao() {
     const referênciaToast = useRef(null);
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { avaliacaoConsultada, audicaoSelecionada } = useContext(ContextoMaestro);
+    const { avaliacaoConsultada, audicaoSelecionada, setAudicaoConsultada, setAudicaoAvaliacao } = useContext(ContextoMaestro);
     const [dados, setDados] = useState({ 
         id_audicao: audicaoSelecionada?.id || "",
         aprovado: avaliacaoConsultada?.aprovado || false,
@@ -50,6 +50,12 @@ export default function CadastrarAvaliacao() {
 
     function retornarAdministrarAvaliacoes() { navegar("../administrar-avaliações"); }
 
+    function consultarAudicaoAvaliacao() {
+        setAudicaoConsultada(null);
+        setAudicaoAvaliacao(avaliacaoConsultada?.audição);
+        navegar("../consultar-audição");
+    };
+
     async function cadastrarAvaliacao() {
         if (validarCampos()) {
             try {
@@ -72,6 +78,7 @@ export default function CadastrarAvaliacao() {
                 <div className={estilizarInlineFlex()}>
                     <Button className={estilizarBotãoRetornar()} label="Retornar" onClick={retornarAdministrarAvaliacoes} />
                     <Button className={estilizarBotãoRemover()} label="Remover" onClick={removerAvaliacao} />
+                    <Button className={estilizarBotão()} label="Audição" onClick={consultarAudicaoAvaliacao}/>
                 </div>
             );
         } else {

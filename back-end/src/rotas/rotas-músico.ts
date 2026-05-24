@@ -17,3 +17,4 @@ RotasMúsico.get("/audicoes/musico/:cpf", verificarToken, verificarPerfilMúsico
 RotasMúsico.get("/audicoes/naipes", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarNaipesAudicoes);
 
 RotasMúsico.get("/:cpf", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarMúsico);
+RotasMúsico.get("/avaliacoes/:id_audicao", verificarToken, verificarPerfilMúsico, ServiçosMúsico.buscarAvaliacoesAudicao);

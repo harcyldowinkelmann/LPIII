@@ -3,6 +3,7 @@ import { getManager } from "typeorm";
 import Usuário, { Status } from "../entidades/usuário";
 import Músico from '../entidades/músico';
 import Audição from "../entidades/audição";
+import Avaliação from "../entidades/avaliação";
 import ServiçosUsuário from "./serviços-usuário";
 
 export default class ServiçosMúsico { 
@@ -97,5 +98,16 @@ export default class ServiçosMúsico {
       const naipes = ServiçosMúsico.filtrarNaipesEliminandoRepetição(audicoes);
       return response.json(naipes.sort());
     } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarNaipesAudicoes" }); }
+  }
+
+  static async buscarAvaliacoesAudicao(request, response) {
+    try {
+      const id_audicao = request.params.id_audicao;
+      const avaliacoes = await Avaliação.find({ 
+        where: { audição: { id: id_audicao } },
+        relations: ["maestro", "maestro.usuário", "audição"]
+      });
+      return response.json(avaliacoes);
+    } catch (error) { return response.status(500).json({ erro: "Erro BD: buscarAvaliacoesAudicao" }); }
   }
 }

@@ -8,13 +8,13 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import ContextoUsuário from "../../contextos/contexto-usuário";
 import ContextoMaestro from "../../contextos/contexto-maestro";
-import { estilizarBotãoRetornar, estilizarCard, estilizarCheckbox, estilizarDivCampo,
+import { estilizarBotão, estilizarBotãoRetornar, estilizarCard, estilizarCheckbox, estilizarDivCampo,
     estilizarDivider, estilizarFlex, estilizarInlineFlex, estilizarInputText, estilizarLabel }
 from "../../utilitários/estilos";
 
 export default function ConsultarAudicao() {
     const { usuárioLogado } = useContext(ContextoUsuário);
-    const { audicaoConsultada, audicaoAvaliacao } = useContext(ContextoMaestro);
+    const { audicaoConsultada, audicaoAvaliacao, setMusicoProponente } = useContext(ContextoMaestro);
     const dados = {
         nome_músico: audicaoConsultada?.músico?.usuário?.nome || audicaoAvaliacao?.músico?.usuário?.nome,
         título: audicaoConsultada?.título || audicaoAvaliacao?.título,
@@ -31,6 +31,12 @@ export default function ConsultarAudicao() {
         if (audicaoConsultada) navegar("../pesquisar-audições");
         else if (audicaoAvaliacao) navegar("../cadastrar-avaliação");
     }
+
+    function consultarMusicoProponente() {
+        if (audicaoConsultada) setMusicoProponente(audicaoConsultada.músico);
+        else setMusicoProponente(audicaoAvaliacao.músico);
+        navegar("../consultar-músico");
+    };
 
     return (
         <div className={estilizarFlex()}>
@@ -78,6 +84,7 @@ export default function ConsultarAudicao() {
                 <Divider className={estilizarDivider()} />
                 <div className={estilizarInlineFlex()}>
                     <Button className={estilizarBotãoRetornar()} label="Retornar" onClick={retornar} />
+                    <Button className={estilizarBotão()} label="Músico" onClick={consultarMusicoProponente}/>
                 </div>
             </Card>
         </div>
